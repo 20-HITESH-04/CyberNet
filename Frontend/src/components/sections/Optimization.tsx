@@ -1,40 +1,412 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Upload, FileText, Image, Zap } from 'lucide-react';
-import { AnimatedCard } from '@/components/ui/AnimatedCard';
-import { ChatBubble } from '@/components/ui/ChatBubble';
+// import { useRef, useState } from "react";
+// import { motion } from "framer-motion";
+// import { Image as ImageIcon, Zap, Sparkles } from "lucide-react";
+// import { AnimatedCard } from "@/components/ui/AnimatedCard";
+// import { ChatBubble } from "@/components/ui/ChatBubble";
+// import { Button } from "@/components/ui/button";
+// import ReactMarkdown from "react-markdown";
+
+// interface OptimizationResult {
+//   id: string;
+//   type: "image" | "text";
+//   original: string; // Local preview or raw text
+//   optimized: string; // Backend feedback / improved creative
+//   timestamp: Date;
+// }
+
+// export const Optimization = () => {
+//   const [results, setResults] = useState<OptimizationResult[]>([]);
+//   const [isOptimizing, setIsOptimizing] = useState(false);
+//   const [textInput, setTextInput] = useState("");
+
+//   const imageInputRef = useRef<HTMLInputElement | null>(null);
+
+//   const BACKEND_URL = "http://localhost:5000"; // update if deployed
+
+//   // Open system file picker
+//   const openFilePicker = () => {
+//     if (imageInputRef.current) imageInputRef.current.click();
+//   };
+
+//   // Handle image upload
+//   // Handle image upload
+// const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+//   const file = e.target.files?.[0];
+//   e.currentTarget.value = "";
+//   if (!file) return;
+
+//   const id = Date.now().toString();
+//   const localPreview = URL.createObjectURL(file);
+
+//   // setResults((prev) => [
+//   //   {
+//   //     id,
+//   //     type: "image",
+//   //     original: localPreview,
+//   //     optimized: "Optimizing...",
+//   //     timestamp: new Date(),
+//   //   },
+//   //   ...prev,
+//   // ]);
+
+//   setResults((prev) =>
+//   prev.map((r) =>
+//     r.id === id
+//       ? {
+//           ...r,
+//           optimized: data.feedback_text,   // ✅ show Gemini feedback
+//           // Optionally also show the improved image
+//           improvedImage: data.improved_creative_path,
+//         }
+//       : r
+//   )
+// );
+
+//   setIsOptimizing(true);
+
+//   try {
+//     const formData = new FormData();
+//     formData.append("file", file); // ✅ send file properly
+
+//     const res = await fetch(`${BACKEND_URL}/get-creative-feedback`, {
+//       method: "POST",
+//       body: formData, // ✅ no JSON here
+//     });
+
+//     const data = await res.json();
+
+//     setResults((prev) =>
+//       prev.map((r) =>
+//         r.id === id ? { ...r, optimized: data.feedback_text } : r
+//       )
+//     );
+//   } catch (err) {
+//     console.error(err);
+//     setResults((prev) =>
+//       prev.map((r) =>
+//         r.id === id ? { ...r, optimized: "Failed to optimize image" } : r
+//       )
+//     );
+//   } finally {
+//     setIsOptimizing(false);
+//   }
+// };
+
+//   // Handle text optimization
+//   const handleTextOptimize = async () => {
+//     if (!textInput.trim()) return;
+
+//     const id = Date.now().toString();
+
+//     setResults((prev) => [
+//       {
+//         id,
+//         type: "text",
+//         original: textInput,
+//         optimized: "Optimizing...",
+//         timestamp: new Date(),
+//       },
+//       ...prev,
+//     ]);
+//     setIsOptimizing(true);
+
+//     try {
+//       const res = await fetch(`${BACKEND_URL}/get-creative-feedback`, {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({
+//           creative_type: "text",
+//           creative_data: textInput,
+//         }),
+//       });
+
+//       const data = await res.json();
+
+//       setResults((prev) =>
+//         prev.map((r) =>
+//           r.id === id ? { ...r, optimized: data.feedback_text } : r
+//         )
+//       );
+//     } catch (err) {
+//       console.error(err);
+//       setResults((prev) =>
+//         prev.map((r) =>
+//           r.id === id ? { ...r, optimized: "Failed to optimize text" } : r
+//         )
+//       );
+//     } finally {
+//       setIsOptimizing(false);
+//       setTextInput("");
+//     }
+//   };
+
+//   return (
+//     <div className="h-full flex flex-col">
+//       {/* Header */}
+//       <motion.div
+//         initial={{ opacity: 0, y: -20 }}
+//         animate={{ opacity: 1, y: 0 }}
+//         className="mb-6"
+//       >
+//         <h2 className="text-3xl font-bold mb-2 flex items-center gap-3">
+//           <Zap className="text-secondary" />
+//           Optimization
+//         </h2>
+//         <p className="text-muted-foreground">
+//           Enhance your content with AI-powered optimization
+//         </p>
+//       </motion.div>
+
+//       {/* Hidden file input */}
+//       <input
+//         type="file"
+//         accept="image/*"
+//         ref={imageInputRef}
+//         onChange={handleImageChange}
+//         className="hidden"
+//       />
+
+//       {/* Upload image card */}
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+//         <div
+//           onClick={openFilePicker}
+//           className="cursor-pointer p-6 rounded-lg border border-dashed border-white/10 hover:bg-muted/10"
+//         >
+//           <div className="text-center">
+//             <ImageIcon size={32} className="mx-auto mb-2 text-secondary" />
+//             <h3 className="font-semibold">Upload Image</h3>
+//             <p className="text-muted-foreground text-sm">Click to upload</p>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Text input */}
+//       <div className="mb-8">
+//         <textarea
+//           value={textInput}
+//           onChange={(e) => setTextInput(e.target.value)}
+//           placeholder="Write or paste your text here..."
+//           rows={4}
+//           className="w-full rounded-md border border-white/10 bg-transparent p-3 text-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+//         />
+//         <div className="mt-2 text-right">
+//           <Button
+//             onClick={handleTextOptimize}
+//             disabled={!textInput.trim() || isOptimizing}
+//           >
+//             <Sparkles size={16} className="mr-2" />
+//             Optimize Text
+//           </Button>
+//         </div>
+//       </div>
+
+//       {/* Results */}
+//       <div className="flex-1 overflow-y-auto space-y-6">
+//         {isOptimizing && (
+//           <AnimatedCard className="p-6 text-center">
+//             <motion.div
+//               animate={{ rotate: 360 }}
+//               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+//               className="w-12 h-12 mx-auto mb-4 border-4 border-secondary border-t-transparent rounded-full"
+//             />
+//             <p className="text-lg">Optimizing your content...</p>
+//           </AnimatedCard>
+//         )}
+
+//         {results.map((result) => (
+//           <div key={result.id} className="flex gap-6">
+//             {/* Original */}
+//             <div className="flex-1">
+//               <ChatBubble isUser={true}>
+//                 <div className="font-medium mb-2">Original {result.type}</div>
+//                 {result.type === "image" ? (
+//                   <img
+//                     src={result.original}
+//                     alt="upload"
+//                     className="max-h-40 rounded mx-auto"
+//                   />
+//                 ) : (
+//                   <pre className="whitespace-pre-wrap text-sm text-muted-foreground">
+//                     {result.original}
+//                   </pre>
+//                 )}
+//               </ChatBubble>
+//             </div>
+
+//             {/* Optimized */}
+//             <div className="flex-1">
+//               <ChatBubble isUser={false}>
+//                 <div className="font-medium mb-2">Optimized {result.type}</div>
+//                 {result.type === "image" ? (
+//                   <img
+//                     src={result.optimized}
+//                     alt="optimized"
+//                     className="max-h-40 rounded mx-auto"
+//                   />
+//                 ) : (
+//                   <div className="prose prose-invert max-w-none text-sm">
+//                     <ReactMarkdown>{result.optimized}</ReactMarkdown>
+//                   </div>
+//                 )}
+//               </ChatBubble>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
+
+
+
+
+import { useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { Image as ImageIcon, Zap, Sparkles } from "lucide-react";
+import { AnimatedCard } from "@/components/ui/AnimatedCard";
+import { ChatBubble } from "@/components/ui/ChatBubble";
+import { Button } from "@/components/ui/button";
+import ReactMarkdown from "react-markdown";
 
 interface OptimizationResult {
   id: string;
-  type: 'image' | 'text';
-  original: string;
-  optimized: string;
+  type: "image" | "text";
+  original: string; // Local preview or raw text
+  optimized: string; // Backend feedback
+  improvedImage?: string; // optional improved image
   timestamp: Date;
 }
 
 export const Optimization = () => {
   const [results, setResults] = useState<OptimizationResult[]>([]);
   const [isOptimizing, setIsOptimizing] = useState(false);
+  const [textInput, setTextInput] = useState("");
 
-  const handleUpload = async (type: 'image' | 'text') => {
-    setIsOptimizing(true);
-    
-    // Simulate upload and optimization
-    setTimeout(() => {
-      const result: OptimizationResult = {
-        id: Date.now().toString(),
-        type,
-        original: `Original ${type} uploaded`,
-        optimized: `Optimized ${type} will appear here...`,
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+
+  const BACKEND_URL = "http://localhost:5000"; // update if deployed
+
+  // Open system file picker
+  const openFilePicker = () => {
+    if (imageInputRef.current) imageInputRef.current.click();
+  };
+
+  // Handle image upload
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.currentTarget.value = "";
+    if (!file) return;
+
+    const id = Date.now().toString();
+    const localPreview = URL.createObjectURL(file);
+
+    // show placeholder while optimizing
+    setResults((prev) => [
+      {
+        id,
+        type: "image",
+        original: localPreview,
+        optimized: "Optimizing...",
         timestamp: new Date(),
-      };
-      setResults(prev => [...prev, result]);
+      },
+      ...prev,
+    ]);
+
+    setIsOptimizing(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch(`${BACKEND_URL}/get-creative-feedback`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      setResults((prev) =>
+        prev.map((r) =>
+          r.id === id
+            ? {
+                ...r,
+                optimized: data.feedback_text || "No feedback received",
+                improvedImage: data.improved_creative_path
+                  ? `${BACKEND_URL}${data.improved_creative_path}`
+                  : undefined,
+              }
+            : r
+        )
+      );
+    } catch (err) {
+      console.error(err);
+      setResults((prev) =>
+        prev.map((r) =>
+          r.id === id
+            ? { ...r, optimized: "Failed to optimize image" }
+            : r
+        )
+      );
+    } finally {
       setIsOptimizing(false);
-    }, 2000);
+    }
+  };
+
+  // Handle text optimization
+  const handleTextOptimize = async () => {
+    if (!textInput.trim()) return;
+
+    const id = Date.now().toString();
+
+    setResults((prev) => [
+      {
+        id,
+        type: "text",
+        original: textInput,
+        optimized: "Optimizing...",
+        timestamp: new Date(),
+      },
+      ...prev,
+    ]);
+    setIsOptimizing(true);
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/get-creative-feedback`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          creative_type: "text",
+          creative_data: textInput,
+        }),
+      });
+
+      const data = await res.json();
+
+      setResults((prev) =>
+        prev.map((r) =>
+          r.id === id
+            ? { ...r, optimized: data.feedback_text || "No feedback received" }
+            : r
+        )
+      );
+    } catch (err) {
+      console.error(err);
+      setResults((prev) =>
+        prev.map((r) =>
+          r.id === id
+            ? { ...r, optimized: "Failed to optimize text" }
+            : r
+        )
+      );
+    } finally {
+      setIsOptimizing(false);
+      setTextInput("");
+    }
   };
 
   return (
     <div className="h-full flex flex-col">
+      {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -49,134 +421,108 @@ export const Optimization = () => {
         </p>
       </motion.div>
 
-      {/* Upload Cards */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8"
-      >
-        <motion.div
-          whileHover={{ scale: 1.02, rotateY: 5 }}
-          transition={{ duration: 0.3 }}
-          onClick={() => handleUpload('image')}
-          className="upload-card perspective transform-3d"
+      {/* Hidden file input */}
+      <input
+        type="file"
+        accept="image/*"
+        ref={imageInputRef}
+        onChange={handleImageChange}
+        className="hidden"
+      />
+
+      {/* Upload image card */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div
+          onClick={openFilePicker}
+          className="cursor-pointer p-6 rounded-lg border border-dashed border-white/10 hover:bg-muted/10"
         >
           <div className="text-center">
-            <motion.div
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center glow-cyan"
-            >
-              <Image size={32} />
-            </motion.div>
-            <h3 className="text-xl font-semibold mb-2">Upload Image</h3>
-            <p className="text-muted-foreground">
-              Optimize your images for better performance
-            </p>
-            <div className="mt-4 flex items-center justify-center gap-2 text-sm text-primary">
-              <Upload size={16} />
-              Click to upload
-            </div>
+            <ImageIcon size={32} className="mx-auto mb-2 text-secondary" />
+            <h3 className="font-semibold">Upload Image</h3>
+            <p className="text-muted-foreground text-sm">Click to upload</p>
           </div>
-        </motion.div>
+        </div>
+      </div>
 
-        <motion.div
-          whileHover={{ scale: 1.02, rotateY: -5 }}
-          transition={{ duration: 0.3 }}
-          onClick={() => handleUpload('text')}
-          className="upload-card perspective transform-3d"
-        >
-          <div className="text-center">
+      {/* Text input */}
+      <div className="mb-8">
+        <textarea
+          value={textInput}
+          onChange={(e) => setTextInput(e.target.value)}
+          placeholder="Write or paste your text here..."
+          rows={4}
+          className="w-full rounded-md border border-white/10 bg-transparent p-3 text-sm focus:outline-none focus:ring-2 focus:ring-secondary"
+        />
+        <div className="mt-2 text-right">
+          <Button
+            onClick={handleTextOptimize}
+            disabled={!textInput.trim() || isOptimizing}
+          >
+            <Sparkles size={16} className="mr-2" />
+            Optimize Text
+          </Button>
+        </div>
+      </div>
+
+      {/* Results */}
+      <div className="flex-1 overflow-y-auto space-y-6">
+        {isOptimizing && (
+          <AnimatedCard className="p-6 text-center">
             <motion.div
-              whileHover={{ scale: 1.1, rotate: -5 }}
-              className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-secondary to-accent flex items-center justify-center glow-purple"
-            >
-              <FileText size={32} />
-            </motion.div>
-            <h3 className="text-xl font-semibold mb-2">Upload Text</h3>
-            <p className="text-muted-foreground">
-              Enhance your text content with AI
-            </p>
-            <div className="mt-4 flex items-center justify-center gap-2 text-sm text-secondary">
-              <Upload size={16} />
-              Click to upload
-            </div>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      {/* Results Area */}
-      <div className="flex-1 overflow-y-auto">
-        {results.length === 0 && !isOptimizing && (
-          <AnimatedCard className="p-8 text-center">
-            <div className="text-6xl mb-4">⚡</div>
-            <h3 className="text-xl font-semibold mb-2">Ready to Optimize</h3>
-            <p className="text-muted-foreground">
-              Upload your content to start optimization
-            </p>
+              animate={{ rotate: 360 }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              className="w-12 h-12 mx-auto mb-4 border-4 border-secondary border-t-transparent rounded-full"
+            />
+            <p className="text-lg">Optimizing your content...</p>
           </AnimatedCard>
         )}
 
-        {isOptimizing && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="flex justify-center mb-6"
-          >
-            <AnimatedCard className="p-6 text-center">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                className="w-12 h-12 mx-auto mb-4 border-4 border-secondary border-t-transparent rounded-full"
-              />
-              <p className="text-lg">Optimizing your content...</p>
-            </AnimatedCard>
-          </motion.div>
-        )}
+        {results.map((result) => (
+          <div key={result.id} className="flex gap-6">
+            {/* Original */}
+            <div className="flex-1">
+              <ChatBubble isUser={true}>
+                <div className="font-medium mb-2">Original {result.type}</div>
+                {result.type === "image" ? (
+                  <img
+                    src={result.original}
+                    alt="upload"
+                    className="max-h-40 rounded mx-auto"
+                  />
+                ) : (
+                  <pre className="whitespace-pre-wrap text-sm text-muted-foreground">
+                    {result.original}
+                  </pre>
+                )}
+              </ChatBubble>
+            </div>
 
-        <div className="space-y-6">
-          {results.map((result, index) => (
-            <motion.div
-              key={result.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="flex gap-6"
-            >
-              {/* Original */}
-              <div className="flex-1">
-                <ChatBubble isUser={true}>
-                  <div className="flex items-center gap-3 mb-2">
-                    {result.type === 'image' ? <Image size={20} /> : <FileText size={20} />}
-                    <span className="font-medium">Original {result.type}</span>
-                  </div>
-                  <p>{result.original}</p>
-                  <div className="mt-3 p-3 bg-muted/20 rounded-lg">
-                    <div className="text-center text-muted-foreground">
-                      [{result.type === 'image' ? 'Image' : 'Text'} Placeholder]
+            {/* Optimized */}
+            <div className="flex-1">
+              <ChatBubble isUser={false}>
+                <div className="font-medium mb-2">Optimized {result.type}</div>
+                {result.type === "image" ? (
+                  <div>
+                    <div className="prose prose-invert max-w-none text-sm mb-3">
+                      <ReactMarkdown>{result.optimized}</ReactMarkdown>
                     </div>
+                    {result.improvedImage && (
+                      <img
+                        src={result.improvedImage}
+                        alt="improved"
+                        className="max-h-40 rounded mx-auto"
+                      />
+                    )}
                   </div>
-                </ChatBubble>
-              </div>
-
-              {/* Optimized */}
-              <div className="flex-1">
-                <ChatBubble isUser={false}>
-                  <div className="flex items-center gap-3 mb-2">
-                    <Zap size={20} className="text-secondary" />
-                    <span className="font-medium">Optimized {result.type}</span>
+                ) : (
+                  <div className="prose prose-invert max-w-none text-sm">
+                    <ReactMarkdown>{result.optimized}</ReactMarkdown>
                   </div>
-                  <p>{result.optimized}</p>
-                  <div className="mt-3 p-3 bg-secondary/20 rounded-lg border border-secondary/30">
-                    <div className="text-center text-muted-foreground">
-                      [Optimized {result.type === 'image' ? 'Image' : 'Text'} Placeholder]
-                    </div>
-                  </div>
-                </ChatBubble>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                )}
+              </ChatBubble>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
