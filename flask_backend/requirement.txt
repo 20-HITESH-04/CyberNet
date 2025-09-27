@@ -1,0 +1,6 @@
+flask
+flask-cors
+pandas
+numpy
+
+pip install -r requirements.txt
