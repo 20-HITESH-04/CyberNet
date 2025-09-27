@@ -1,6 +1,8 @@
-flask
-flask-cors
+Flask
+Flask-Cors
 pandas
 numpy
-
-pip install -r requirements.txt
+tensorflow
+transformers
+scikit-learn
+tf-keras          # The required backwards-compatible package
